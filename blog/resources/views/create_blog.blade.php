@@ -2,10 +2,9 @@
 
 @section('content')
 
-    <h3 class="text-center py-3 mt-md-2">Create Blog</h3>
-
-    <div class="col-12 col-md-9 col-lg-8 mx-auto bg-light rounded p-2 p-lg-5">
-        <form action="create_blog" method="post" enctype="multipart/form-data">
+    <div class="col-12 col-md-9 col-lg-8 mx-auto bg-light rounded p-2 p-lg-4 my-4">
+        <h3 class="text-center">Create Blog</h3>
+        <form action="{{ route('create_blog')  }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="mb-3 mx-auto">
                 <label for="category" class="form-label">Category</label>

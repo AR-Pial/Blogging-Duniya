@@ -11,21 +11,21 @@
             <ul class="navbar-nav w-100">
                 @if (Session::has('user_id'))
                     <li class="nav-item ">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="{{ route('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/create_blog">Create Blog</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user_posts">My Blogs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user_timeline">Timeline</a>
+                        <a class="nav-link" href="{{ route('create_blog') }}">Create Blog</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="community">Community</a>
+                        <a class="nav-link" href="{{ route('user_posts') }}">My Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('user_timeline') }}">Timeline</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('community') }}">Community</a>
                     </li>
 
                     <li class="nav-item dropdown ms-lg-auto">
@@ -36,8 +36,8 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end overflow-hidden" aria-labelledby="navbarDropdownMenuLink">
 
-                            <li class=""><a class="dropdown-item m-0" href="profile">Profile</a></li>
-                            <li class=""><a class="dropdown-item m-0" href="logout">Log out</a></li>
+                            <li class=""><a class="dropdown-item m-0" href="{{ route('profile') }}">Profile</a></li>
+                            <li class=""><a class="dropdown-item m-0" href="{{ route('logout') }}">Log out</a></li>
                         </ul>
                     </li>
                 @endif

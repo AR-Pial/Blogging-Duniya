@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Blog;
 use App\Models\User;
+use App\Models\Comment;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -58,7 +59,8 @@ function blog_page($id){
     $user_id = session('user_id');
     if ($user_id) {
         $blog = Blog::find($id);
-        return view('blog_page', ['blog' => $blog]);
+        $comments = $blog->comments;
+        return view('blog_page', ['blog' => $blog,'comments'=>$comments]);
     }
     else {
         return view('login');
@@ -103,15 +105,54 @@ function edit_blog(Request $req){
 }
 
 function delete_blog(Request $req){
-    $id = $req->input('id');
-    $blog = Blog::find($id);
-    if($blog->image){
-        $prev_image = $blog->image;
-        Storage::delete('public/' . $prev_image);
+    $user_id = session('user_id');
+    if ($user_id){
+        $id = $req->input('id');
+        $blog = Blog::find($id);
+        if($blog->image){
+            $prev_image = $blog->image;
+            Storage::delete('public/' . $prev_image);
+        }
+        $blog-> delete();
+
+        return response()->json(["message"=> "Blog Deleted."]);
     }
-    $blog-> delete();
-
-    return response()->json(["message"=> "Blog Deleted."]);
+    else{
+        return view('login');
+    }
 }
 
+    function create_comment(Request $req){
+        $user_id = session('user_id');
+        if($user_id){
+            $blogID = $req->input('blog_id');
+            $user_comment = $req->input('comment');
+            $comment = new Comment();
+            $comment->content = $user_comment;
+            $comment->user_id = $user_id;
+            $comment->blog_id = $blogID;
+            $comment->save();
+            return response()->json(["message"=>"Comment Created"]);
+        }
+        else{
+            return view('login');
+        }
+    }
+
+    function delete_comment(Request $req){
+        $user_id = session('user_id');
+        if ($user_id){
+            $id = $req->input('id');
+            $comment = Comment::find($id);
+
+            $comment-> delete();
+
+            return response()->json(["message"=> "Comment Deleted."]);
+        }
+        else{
+            return view('login');
+        }
+    }
+
 }
+

@@ -112,7 +112,6 @@ class UserController extends Controller
         }
     }
 
-
     function user_posts(Request $req){
         $user_id = session('user_id');
         $user = User::find($user_id);

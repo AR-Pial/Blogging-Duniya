@@ -18,10 +18,8 @@
             @foreach($blogs as $blog)
                 <div><a class="custom-montserrat pb-1" href="">{{ $blog->user->name }}</a>
                     <a href="{{route('blog_page',$blog->id )}}" class="mx-2 mx-lg-4 my-2 my-lg-3">
-
-                        <div class="card border-0 d-flex flex-column" style="width: 18rem;">
-
-                            <img src="{{ asset('storage/' . $blog->image) }}" class="card-img-top" alt="No Image" height="200px">
+                        <div class="card  d-flex flex-column border border-light rounded" style="width: 18rem;">
+                            <img src="{{ asset('storage/' . $blog->image) }}" class="card-img-top rounded" alt="No Image" height="200px">
                             <div class="card-body">
                                <h5 class="card-text text-dark text-center" style="height: 66px;">{{ Str::limit($blog->title, 81, '...') }}</h5>
                             </div>

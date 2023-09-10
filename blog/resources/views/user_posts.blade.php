@@ -14,10 +14,12 @@
                                 <span class="">-</span>
                                 <span id="delete" data-id="{{$blog->id}}"  class="custom-montserrat clickable-span text-primary">Delete</span>
                             </div>
-                            <img src="{{ asset('storage/' . $blog->image) }}" class="card-img-top" alt="No Image" height="200px">
-                            <div class="card-body">
-                                <h5 class="card-text text-dark text-center">{{ Str::limit($blog->title, 81) }}</h5>
-                            </div>
+                            <a  href="{{route('blog_page',$blog->id )}}" class="border border-light rounded">
+                                <img src="{{ asset('storage/' . $blog->image) }}" class="card-img-top rounded" alt="No Image" height="200px">
+                                <div class="card-body">
+                                    <h5 class="card-text text-dark text-center">{{ Str::limit($blog->title, 81) }}</h5>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 @endforeach
@@ -77,7 +79,6 @@
     <script>
         $(document).ready(function() {
             $('body').on('click','#delete', function(e) {
-                console.log("ok ok delete")
                 let id = $(this).attr('data-id');
                 let url = "{{ route('delete_blog') }}";
                 $.ajax({
@@ -137,7 +138,7 @@
                 console.log(url)
 
                 $.ajax({
-                    type: 'post',
+                    type: 'POST',
                     url: url, // Replace with your Laravel route
                     processData: false,
                     contentType: false,
