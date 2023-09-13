@@ -9,12 +9,14 @@
                 <p class="py-2 pt-lg-3 custom-montserrat" style="white-space: pre-wrap;">{{ $blog->content }}</p>
             </div>
         </div>
-        @if($liked)
-            <i id="like-unlike" class="fa-solid fa-thumbs-down text-primary fs-5  py-1 px-2 rounded" style="background-color: #d9f2eb !important;"><span class="text-dark fs-6 ms-2">{{ $blog->totalLikes() }}</span></i>
-        @else
-            <i id="like-unlike" class="fa-solid fa-thumbs-up text-primary fs-5 bg-light py-1 px-2 rounded" style="background-color: #d9f2eb !important;"> <span class="text-dark fs-6 ms-2">{{ $blog->totalLikes() }}</span></i>
-        @endif
-
+        <div class="d-flex">
+            @if($liked)
+                <i id="like-unlike" class="fa-solid fa-thumbs-down text-primary fs-5  py-1 px-2 rounded" style="background-color: #d9f2eb !important;"><span class="text-dark fs-6 ms-2">{{ $blog->totalLikes() }}</span></i>
+            @else
+                <i id="like-unlike" class="fa-solid fa-thumbs-up text-primary fs-5 bg-light py-1 px-2 rounded" style="background-color: #d9f2eb !important;"> <span class="text-dark fs-6 ms-2">{{ $blog->totalLikes() }}</span></i>
+            @endif
+            <span class="ms-1 badge text-dark ms-auto" style="background-color: #d9f2eb;"><i class="fa-solid fa-share fa-rotate-180 fs-5 text-primary"></i></span>
+        </div>
 
         <hr>
         <div class="mb-3 col-12 col-lg-6">
