@@ -23,5 +23,17 @@ class Blog extends Model
     {
         return $this->hasMany(Comment::class, 'blog_id');
     }
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'blog_likes', 'blog_id', 'user_id');
+    }
+    public function totalLikes()
+    {
+        return $this->likes()->count();
+    }
+    public function totalComments()
+    {
+        return $this->comments()->count();
+    }
 
 }

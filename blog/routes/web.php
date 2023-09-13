@@ -41,6 +41,7 @@ Route::post('edit-blog',[PostController::class,'edit_blog'])->name('edit_blog');
 Route::post('delete-blog',[PostController::class,'delete_blog'])->name('delete_blog');
 Route::post('create-comment',[PostController::class,'create_comment'])->name('create_comment');
 Route::post('delete-comment',[PostController::class,'delete_comment'])->name('delete_comment');
+Route::post('like-unlike',[PostController::class,'like_unlike'])->name('like_unlike');
 
 
 

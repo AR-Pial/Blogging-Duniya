@@ -38,7 +38,7 @@ function create_post(Request $req){
         $blog->image = $imagePath;
     }
     $blog->save();
-    return redirect('user_posts');
+    return redirect()->route('user_posts');
 }
 
 function home_blogs(Request $req){
@@ -59,8 +59,10 @@ function blog_page($id){
     $user_id = session('user_id');
     if ($user_id) {
         $blog = Blog::find($id);
+        $user = User::find($user_id);
         $comments = $blog->comments;
-        return view('blog_page', ['blog' => $blog,'comments'=>$comments]);
+        $liked = $user->likedBlogs->contains($blog);
+        return view('blog_page', ['blog' => $blog,'comments'=>$comments,'liked'=>$liked]);
     }
     else {
         return view('login');
@@ -144,15 +146,36 @@ function delete_blog(Request $req){
         if ($user_id){
             $id = $req->input('id');
             $comment = Comment::find($id);
-
             $comment-> delete();
-
             return response()->json(["message"=> "Comment Deleted."]);
         }
         else{
             return view('login');
         }
     }
+
+    function like_unlike(Request $req){
+        $user_id = session('user_id');
+        if($user_id){
+            $id = $req->input('blog_id');
+            $blog = Blog::find($id);
+            $user = User::find($user_id);
+            $liked = $user->likedBlogs->contains($blog);
+            if ($liked){
+                $user->likedBlogs()->detach($blog);
+                return response()->json(["message"=> "Blog Unliked"]);
+            }
+            else{
+                $user->likedBlogs()->attach($blog);
+                return response()->json(["message"=> "Liked"]);
+            }
+
+        }
+        else{
+            return view('login');
+        }
+    }
+
 
 }
 
