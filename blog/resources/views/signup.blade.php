@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="container">
-        <div class="text-center pt-4 pt-lg-5">
-            <img  src="{{ asset('images/BloggingDuniya.png') }}" alt="Example Image">
-        </div>
+{{--        <div class="text-center pt-4 pt-lg-5">--}}
+{{--            <img  src="{{ asset('images/BloggingDuniya.png') }}" alt="Example Image">--}}
+{{--        </div>--}}
         <div class="row justify-content-center my-2 my-lg-4">
             <div class="col-lg-6 col-md-7 col-sm-10 bg-light px-5 py-3 rounded">
                 <form id="registrationForm" action="" method="post">

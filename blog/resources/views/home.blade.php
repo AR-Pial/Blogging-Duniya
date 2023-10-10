@@ -1,22 +1,13 @@
 @extends('base')
 
 @section('content')
-
-<div class="banner row m-0">
-    <div class="col-12 col-md-7 d-flex justify-content-center align-items-center">
-        <p class="custom-montserrat fs-4  px-2 px-lg-5">Welcome to <span class="fs-3 text-danger">Blogging Duniya</span>,  Your Literary Haven - Where Ideas Take Flight and Imagination Knows No Bounds. </p>
-    </div>
-
-    <div class="col-12 col-md-5 banner-image text-center">
-        <img src="{{ asset('images/Blog-banner.png') }}" alt="">
-    </div>
-</div>
-
-<div class="container">
-    <div class="blogs-section my-4">
-        <div class="blogs d-flex flex-wrap gap-5 justify-content-center">
+<main class="m-0 p-0">
+    <div class="row m-0">
+    <div class="blogs-section mb-4 p-2 col-12 col-md-10 order-last order-md-first">
+        <div class="blogs d-flex flex-wrap justify-content-center  justify-content-md-between px-1 px-lg-2">
             @foreach($blogs as $blog)
-                <div class="">
+                <div class="mx-2 my-2">
+
                     <div class="m-0 p-0 d-flex">
                         <a class="custom-montserrat" href="">{{ $blog->user->name }}</a>
                     </div>
@@ -37,10 +28,35 @@
                 </div>
             @endforeach
         </div>
+    </div>
+    <div class="py-2 col-12 col-md-2 bg-light  justify-content-center">
+        <div class="col-9 col-md-12 mt-md-2 mx-auto">
+            <label for="sort_by">Sort by</label>
+            <select id="sort_by" class="form-select form-select-sm" aria-label="Default select example">
+                <option selected value="recent">Most Recent</option>
+                <option value="last_hour">Last 1 Hour</option>
+                <option value="today">Today</option>
+                <option value="last_week">Last Week</option>
+                <option value="last_month">Last Month</option>
+                <option value="last_year">Last Year</option>
+                <option value="most_liked">Most Liked</option>
+                <option value="oldest">Oldest</option>
+            </select>
+        </div>
 
+        <div class="col-9 col-md-12 mt-1 mt-md-2 mx-auto">
+            <label for="sort_by">Filter by</label>
+            <select id="sort_by" class="form-select form-select-sm" aria-label="Default select example">
+                <option selected value="all">All</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
     </div>
 </div>
 
+</main>
 @endsection
 
 @section('script')

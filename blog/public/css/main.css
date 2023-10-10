@@ -25,7 +25,7 @@ h1,h2,h3,h4,h5,h6,label{
 
 /*navbar*/
 .navbar {
-    background-color: #A0DAA9 !important; /* Light gray background */
+    background-color: #79d2bb !important; /* Light gray background */
 }
 .navbar li a {
     color: #000000;
@@ -51,6 +51,10 @@ h1,h2,h3,h4,h5,h6,label{
 .clickable-span {
     position: relative;
     cursor: pointer;
+}
+
+footer{
+    background-color: #2d3748;
 }
 
 

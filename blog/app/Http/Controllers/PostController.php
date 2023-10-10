@@ -32,7 +32,6 @@ function create_post(Request $req){
     $blog->category_id = $req->category;
     $blog->user_id = $user_id;
 
-
     if ($req->hasFile('image')) {
         $imagePath = $req->file('image')->store('blog_images', 'public');
         $blog->image = $imagePath;
@@ -46,8 +45,9 @@ function home_blogs(Request $req){
     $user_id = session('user_id');
     if ($user_id) {
 
-        $blogs = Blog::all();
-        return view('home', ['blogs' => $blogs]);
+        $blogs = Blog::orderBy('created_at', 'desc')->get();
+        $categories = Category::all();
+        return view('home', ['blogs' => $blogs, 'categories'=>$categories]);
     }
     else {
         return view('login');

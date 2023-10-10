@@ -1,24 +1,19 @@
 <nav class="navbar navbar-expand-lg navbar-light py-2">
-    <div class="container-fluid row">
+    <div class="container-fluid row justify-content-center">
         <div class="home col-9 col-md-3">
             <a class="" href="/"><img class="bg-transparent"  src="{{ asset('images/BloggingDuniya.png') }}" alt="Example Image"></a>
         </div>
-
+        @if (Session::has('user_id'))
         <button class="navbar-toggler col-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse col-12 col-md-9" id="navbarNavDropdown">
+         <div class="collapse navbar-collapse col-12 col-md-9" id="navbarNavDropdown">
             <ul class="navbar-nav w-100">
-                @if (Session::has('user_id'))
                     <li class="nav-item ">
                         <a class="nav-link" href="{{ route('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('create_blog') }}">Create Blog</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('user_posts') }}">My Blogs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('user_timeline') }}">Timeline</a>
@@ -37,11 +32,13 @@
                         <ul class="dropdown-menu dropdown-menu-end overflow-hidden" aria-labelledby="navbarDropdownMenuLink">
 
                             <li class=""><a class="dropdown-item m-0" href="{{ route('profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="dropdown-item m-0" href="{{ route('user_posts') }}">My Blogs</a></li>
                             <li class=""><a class="dropdown-item m-0" href="{{ route('logout') }}">Log out</a></li>
                         </ul>
                     </li>
-                @endif
+
             </ul>
         </div>
+        @endif
     </div>
 </nav>
