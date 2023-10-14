@@ -26,6 +26,7 @@ Route::get('/', function () {
     }
 });
 Route::get('home',[PostController::class,'home_blogs'])->name('home');
+Route::get('home/sorted',[PostController::class,'sorted_home_blogs'])->name('sorted_home_blogs');
 Route::get('profile',[UserController::class,'profile'])->name('profile');
 Route::get('logout',[UserController::class,'logout'])->name('logout');
 

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Comment;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -44,10 +45,147 @@ function home_blogs(Request $req){
 
     $user_id = session('user_id');
     if ($user_id) {
-
         $blogs = Blog::orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         return view('home', ['blogs' => $blogs, 'categories'=>$categories]);
+    }
+    else {
+        return view('login');
+    }
+}
+
+function sorted_home_blogs(Request $req){
+    $user_id = session('user_id');
+    if ($user_id) {
+        $sortValue = $req->input('sorted_value') ;
+        $filterValue = $req->filter_value;
+        $blogArray = [];
+
+            if ($sortValue == 'oldest') {
+                $blogs = Blog::orderBy('created_at', 'asc');
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+
+            else if($sortValue == 'recent'){
+                $blogs = Blog::orderBy('created_at', 'desc');
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+
+            else if($sortValue == 'last_hour'){
+                $startTime = Carbon::now()->subHours(1);
+                //$currentTime = Carbon::now();
+                $blogs = Blog::orderBy('created_at', 'desc')
+                        ->where('created_at', '>=',$startTime);
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+            else if($sortValue == 'Last_24'){
+                $startTime = Carbon::now()->subHours(24);
+                $blogs = Blog::orderBy('created_at', 'desc')
+                             ->where('created_at', '>=',$startTime);
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+            else if($sortValue == 'last_week'){
+                $startTime = Carbon::now()->subWeek();
+                $blogs = Blog::orderBy('created_at', 'desc')
+                            ->where('created_at', '>=',$startTime);
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+            else if($sortValue == 'last_month'){
+                $startTime = Carbon::now()->subMonth();
+                $blogs = Blog::orderBy('created_at', 'desc')
+                    ->where('created_at', '>=',$startTime);
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+            else if($sortValue == 'last_year'){
+                $startTime = Carbon::now()->subYear();
+                $blogs = Blog::orderBy('created_at', 'desc')
+                    ->where('created_at', '>=',$startTime);
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+            else if($sortValue == 'most_liked'){
+                $blogs = Blog::withCount('likes')->orderBy('likes_count', 'desc')->orderBy('created_at', 'desc');
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+            else if($sortValue == 'most_commented'){
+                $blogs = Blog::withCount('comments')->orderBy('comments_count', 'desc')->orderBy('created_at', 'desc');
+                $blogs->orderBy('created_at', 'desc');
+                if($filterValue !== 'all' && $filterValue !== null){
+                    $blogs->where('category_id', $filterValue);
+                }
+                $blogs = $blogs->get();
+            }
+            else{
+                $blogs = [];
+            }
+
+        if($blogs){
+            foreach ($blogs as $blog) {
+                $createdAt = Carbon::parse($blog->created_at);
+                $currentTime = Carbon::now();
+
+                $diffInSeconds = $createdAt->diffInSeconds($currentTime);
+                $diffInMinutes = $createdAt->diffInMinutes($currentTime);
+                $diffInHours = $createdAt->diffInHours($currentTime);
+                $diffInDays = $createdAt->diffInDays($currentTime);
+                $diffInMonths = $createdAt->diffInMonths($currentTime);
+                $diffInYears = $createdAt->diffInYears($currentTime);
+
+                // Rename the variable to $posted_at
+                $posted_at = '';
+
+                if ($diffInYears > 0) {
+                    $posted_at = $diffInYears . ' year' . ($diffInYears > 1 ? 's' : '') . ' ago';
+                } elseif ($diffInMonths > 0) {
+                    $posted_at = $diffInMonths . ' month' . ($diffInMonths > 1 ? 's' : '') . ' ago';
+                } elseif ($diffInDays > 0) {
+                    $posted_at = $diffInDays . ' day' . ($diffInDays > 1 ? 's' : '') . ' ago';
+                } elseif ($diffInHours > 0) {
+                    $posted_at = $diffInHours . ' hour' . ($diffInHours > 1 ? 's' : '') . ' ago';
+                } elseif ($diffInMinutes > 0) {
+                    $posted_at = $diffInMinutes . ' minute' . ($diffInMinutes > 1 ? 's' : '') . ' ago';
+                } else {
+                    $posted_at = $diffInSeconds . ' second' . ($diffInSeconds > 1 ? 's' : '') . ' ago';
+                }
+
+                $blogArray[] = [
+                    'user_name' => $blog->user->name, // Assuming you have a user relationship in your Blog model.
+                    'title' => $blog->title,
+                    'content' => $blog->content,
+                    'total_likes' => $blog->totalLikes(), // You need to define this method in your Blog model.
+                    'total_comments' => $blog->totalComments(), // You need to define this method in your Blog model.
+                    'image' => asset('storage/' . $blog->image),
+                    'id' => $blog->id,
+                    'posted_at' => $posted_at
+                ];
+            }
+        }
+
+
+        return response()->json(['blogs' => $blogArray ,'sort_by' => $sortValue, 'filter_by' => $filterValue]);
     }
     else {
         return view('login');

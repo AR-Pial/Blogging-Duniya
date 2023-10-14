@@ -21,8 +21,6 @@ h1,h2,h3,h4,h5,h6,label{
     font-weight: 500;
 }
 
-
-
 /*navbar*/
 .navbar {
     background-color: #79d2bb !important; /* Light gray background */
@@ -51,6 +49,10 @@ h1,h2,h3,h4,h5,h6,label{
 .clickable-span {
     position: relative;
     cursor: pointer;
+}
+
+#blog_posted_id{
+    font-size: 12px !important;
 }
 
 footer{

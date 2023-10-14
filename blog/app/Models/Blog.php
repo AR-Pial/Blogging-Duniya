@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class Blog extends Model
 {
     use HasFactory, HasUuids;
-
+    public $timestamps = true;
     public function category()
     {
         return $this->belongsTo(Category::class);
