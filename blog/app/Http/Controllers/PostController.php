@@ -45,7 +45,7 @@ function home_blogs(Request $req){
 
     $user_id = session('user_id');
     if ($user_id) {
-        $blogs = Blog::orderBy('created_at', 'desc')->get();
+        $blogs = Blog::orderBy('created_at', 'desc')->paginate(6);
         $categories = Category::all();
         return view('home', ['blogs' => $blogs, 'categories'=>$categories]);
     }

@@ -117,7 +117,9 @@ class UserController extends Controller
         $user = User::find($user_id);
 
         if ($user) {
-            $blogs = Blog::where('user_id', $user_id)->get();
+            $blogs = Blog::where('user_id', $user_id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
             return view('user_posts', ['blogs' => $blogs]);
         }
         else {

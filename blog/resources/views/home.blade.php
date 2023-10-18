@@ -2,14 +2,15 @@
 
 @section('content')
 <main class="m-0 p-0">
-    <div class="row m-0 min-vh-100 ">
+    <div class="row m-0 min-vh-100 justify-content-center">
         <div class="blogs-section mb-4 p-2 col-12 col-md-10 order-last order-md-first">
             @php
                 use Carbon\Carbon;
             @endphp
-            <div id="home_blogs" class="blogs d-flex flex-wrap justify-content-center  justify-content-md-start px-1 px-lg-2">
+            <div id="home_blogs" class="blogs row justify-content-center px-1 px-lg-2">
+
                 @foreach($blogs as $blog)
-                    <div class="mx-2 my-2">
+                    <div class="mx-2 my-2 col">
                         <div class="m-0 py-1 d-flex flex-column lh-1">
                             <a class="custom-montserrat m-0 p-0" href=""> <span class="p-0 m-0">{{ $blog->user->name }}</span> </a>
                             {{-- <span class="text-muted m-0 py-1 " style="font-size: smaller">{{ date('d-m-y', strtotime($blog->created_at)) }}</span>--}}
@@ -55,7 +56,11 @@
                         </div>
                     </div>
                 @endforeach
+                <div class="my-3 col-12 d-flex justify-content-center"> <span class="">{{ $blogs->links() }}</span></div>
             </div>
+
+
+
         </div>
         <div class="py-2 col-12 col-md-2 bg-light  justify-content-center">
         <div class="col-9 col-md-12 mt-md-2 mx-auto">
