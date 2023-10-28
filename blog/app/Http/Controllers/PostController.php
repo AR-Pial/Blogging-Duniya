@@ -66,7 +66,7 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
 
             else if($sortValue == 'recent'){
@@ -74,7 +74,7 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
 
             else if($sortValue == 'last_hour'){
@@ -85,7 +85,7 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
             else if($sortValue == 'Last_24'){
                 $startTime = Carbon::now()->subHours(24);
@@ -94,7 +94,7 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
             else if($sortValue == 'last_week'){
                 $startTime = Carbon::now()->subWeek();
@@ -103,7 +103,7 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
             else if($sortValue == 'last_month'){
                 $startTime = Carbon::now()->subMonth();
@@ -112,7 +112,7 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
             else if($sortValue == 'last_year'){
                 $startTime = Carbon::now()->subYear();
@@ -121,14 +121,14 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
             else if($sortValue == 'most_liked'){
                 $blogs = Blog::withCount('likes')->orderBy('likes_count', 'desc')->orderBy('created_at', 'desc');
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
             else if($sortValue == 'most_commented'){
                 $blogs = Blog::withCount('comments')->orderBy('comments_count', 'desc')->orderBy('created_at', 'desc');
@@ -136,12 +136,12 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->get();
+                $blogs = $blogs->paginate(6);
             }
             else{
                 $blogs = [];
             }
-
+        $paginationLinks = "";
         if($blogs){
             foreach ($blogs as $blog) {
                 $createdAt = Carbon::parse($blog->created_at);
@@ -182,10 +182,9 @@ function sorted_home_blogs(Request $req){
                     'posted_at' => $posted_at
                 ];
             }
+            $paginationLinks = $blogs->links('home')->toHtml();
         }
-
-
-        return response()->json(['blogs' => $blogArray ,'sort_by' => $sortValue, 'filter_by' => $filterValue]);
+        return response()->json(['blogs' => $blogArray ,'pagination_links' => $paginationLinks,'sort_by' => $sortValue, 'filter_by' => $filterValue]);
     }
     else {
         return view('login');

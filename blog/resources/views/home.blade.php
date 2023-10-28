@@ -119,7 +119,7 @@
                         $.each(blogs, function (index, blog) {
                             let limitedTitle = blog.title.length > 72 ? blog.title.slice(0, 72) + '...' : blog.title;
 
-                            let blogElement = '<div class="mx-2 my-2">'+
+                            let blogElement = '<div class="mx-2 my-2 col">'+
                                                 '<div class="m-0 py-1 d-flex flex-column lh-1">'+
                                                     '<a class="custom-montserrat" href="">'+blog.user_name+'</a>'+
                                                     '<span id="blog_posted_id" class="text-muted m-0 p-0">' +blog.posted_at+ '</span>'+
@@ -138,9 +138,12 @@
                                                     '</div>'+
                                                 '</div>'+
                                             '</div>'
-
                             $home_blogs.append(blogElement);
+
                         });
+
+                        let paginate ='<div class="my-3 col-12 d-flex justify-content-center"> <span class="">'+data.pagination_links+'</span></div>'
+                        $home_blogs.append(paginate);
                     }
 
                 })
