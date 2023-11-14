@@ -32,7 +32,7 @@
                     <div class="px-2 py-1 mb-2  text-align-center rounded " style="background-color: #d9f2eb;"  >
                         <div class="d-flex flex-row">
                             <a href="#">{{ $comment->user->name }}</a>
-                            @if($comment->user_id ==  session('user_id'))
+                            @if($comment->user_id ==  Auth::user()->id)
                                 <span id="delete_comment" data-id="{{$comment->id}}"  class="clickable-span text-primary ms-auto">Delete</span>
                             @endif
 

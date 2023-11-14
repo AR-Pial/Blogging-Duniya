@@ -2,7 +2,14 @@
 
 @section('content')
 
-    My Community
+    <div class="">
+        <div class="">
+
+        </div>
+        <div>
+
+        </div>
+    </div>
 
 @endsection
 

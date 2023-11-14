@@ -3,7 +3,7 @@
         <div class="home col-9 col-md-3">
             <a class="" href="/"><img class="bg-transparent"  src="{{ asset('images/BloggingDuniya.png') }}" alt="Example Image"></a>
         </div>
-        @if (Session::has('user_id'))
+        @auth
         <button class="navbar-toggler col-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -39,6 +39,6 @@
 
             </ul>
         </div>
-        @endif
+        @endauth
     </div>
 </nav>

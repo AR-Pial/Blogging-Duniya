@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Blog;
 use App\Models\User;
 use App\Models\Comment;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -15,18 +16,12 @@ class PostController extends Controller
 {
 
 function get_categories(Request $req){
-
-    $user_id = session('user_id');
-    if ($user_id) {
-        $categories = Category::all();
-        return view('create_blog', ['categories' => $categories]);
-    }
-    else {
-        return view('login');
-    }
+    $categories = Category::all();
+    return view('create_blog', ['categories' => $categories]);
 }
 function create_post(Request $req){
-    $user_id = session('user_id');
+    $user = Auth::user();
+    $user_id = $user->id;
     $blog = new Blog();
     $blog->title = $req->title;
     $blog->content = $req->blog_content;
@@ -42,42 +37,30 @@ function create_post(Request $req){
 }
 
 function home_blogs(Request $req){
-
-    $user_id = session('user_id');
-    if ($user_id) {
-        $blogs = Blog::orderBy('created_at', 'desc')->paginate(6);
-        $categories = Category::all();
-        return view('home', ['blogs' => $blogs, 'categories'=>$categories]);
-    }
-    else {
-        return view('login');
-    }
+    $blogs = Blog::orderBy('created_at', 'desc')->paginate(6);
+    $categories = Category::all();
+    return view('home', ['blogs' => $blogs, 'categories'=>$categories]);
 }
 
 function sorted_home_blogs(Request $req){
-    $user_id = session('user_id');
-    if ($user_id) {
         $sortValue = $req->input('sorted_value') ;
         $filterValue = $req->filter_value;
         $blogArray = [];
+        $blogs = [];
 
             if ($sortValue == 'oldest') {
                 $blogs = Blog::orderBy('created_at', 'asc');
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
-            }
-
-            else if($sortValue == 'recent'){
+            }elseif($sortValue == 'recent'){
                 $blogs = Blog::orderBy('created_at', 'desc');
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
 
-            else if($sortValue == 'last_hour'){
+            elseif($sortValue == 'last_hour'){
                 $startTime = Carbon::now()->subHours(1);
                 //$currentTime = Carbon::now();
                 $blogs = Blog::orderBy('created_at', 'desc')
@@ -85,64 +68,56 @@ function sorted_home_blogs(Request $req){
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
-            else if($sortValue == 'Last_24'){
+            elseif($sortValue == 'Last_24'){
                 $startTime = Carbon::now()->subHours(24);
                 $blogs = Blog::orderBy('created_at', 'desc')
                              ->where('created_at', '>=',$startTime);
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
-            else if($sortValue == 'last_week'){
+            elseif($sortValue == 'last_week'){
                 $startTime = Carbon::now()->subWeek();
                 $blogs = Blog::orderBy('created_at', 'desc')
                             ->where('created_at', '>=',$startTime);
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
-            else if($sortValue == 'last_month'){
+            elseif($sortValue == 'last_month'){
                 $startTime = Carbon::now()->subMonth();
                 $blogs = Blog::orderBy('created_at', 'desc')
                     ->where('created_at', '>=',$startTime);
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
-            else if($sortValue == 'last_year'){
+            elseif($sortValue == 'last_year'){
                 $startTime = Carbon::now()->subYear();
                 $blogs = Blog::orderBy('created_at', 'desc')
                     ->where('created_at', '>=',$startTime);
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
-            else if($sortValue == 'most_liked'){
+            elseif($sortValue == 'most_liked'){
                 $blogs = Blog::withCount('likes')->orderBy('likes_count', 'desc')->orderBy('created_at', 'desc');
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
-            else if($sortValue == 'most_commented'){
+            elseif($sortValue == 'most_commented'){
                 $blogs = Blog::withCount('comments')->orderBy('comments_count', 'desc')->orderBy('created_at', 'desc');
                 $blogs->orderBy('created_at', 'desc');
                 if($filterValue !== 'all' && $filterValue !== null){
                     $blogs->where('category_id', $filterValue);
                 }
-                $blogs = $blogs->paginate(6);
             }
-            else{
-                $blogs = [];
-            }
+
         $paginationLinks = "";
         if($blogs){
+            $blogs = $blogs->paginate(6);
             foreach ($blogs as $blog) {
                 $createdAt = Carbon::parse($blog->created_at);
                 $currentTime = Carbon::now();
@@ -182,41 +157,29 @@ function sorted_home_blogs(Request $req){
                     'posted_at' => $posted_at
                 ];
             }
-            $paginationLinks = $blogs->links('home')->toHtml();
+           //return response()->json(['all'=>$sortValue, 'net'=>$filterValue]);
+//            $paginationLinks = $blogs->links()->toHtml();
+            $paginationLinks = (string)$blogs->links();
         }
+
         return response()->json(['blogs' => $blogArray ,'pagination_links' => $paginationLinks,'sort_by' => $sortValue, 'filter_by' => $filterValue]);
-    }
-    else {
-        return view('login');
-    }
 }
 
 function blog_page($id){
-
-    $user_id = session('user_id');
-    if ($user_id) {
-        $blog = Blog::find($id);
-        $user = User::find($user_id);
-        $comments = $blog->comments;
-        $liked = $user->likedBlogs->contains($blog);
-        return view('blog_page', ['blog' => $blog,'comments'=>$comments,'liked'=>$liked]);
-    }
-    else {
-        return view('login');
-    }
+    $user = Auth::user();
+    $user_id = $user->id;
+    $blog = Blog::find($id);
+    $user = User::find($user_id);
+    $comments = $blog->comments;
+    $liked = $user->likedBlogs->contains($blog);
+    return view('blog_page', ['blog' => $blog,'comments'=>$comments,'liked'=>$liked]);
 }
 
 function get_blog(Request $req){
-    $user_id = session('user_id');
-    if ($user_id) {
-        $categories = Category::all();
-        $id = $req->input('id');
-        $blog = Blog::find($id);
-        return response()->json(['blog' => $blog,'categories' => $categories]);
-    }
-    else {
-        return view('login');
-    }
+    $categories = Category::all();
+    $id = $req->input('id');
+    $blog = Blog::find($id);
+    return response()->json(['blog' => $blog,'categories' => $categories]);
 }
 
 function edit_blog(Request $req){
@@ -244,8 +207,6 @@ function edit_blog(Request $req){
 }
 
 function delete_blog(Request $req){
-    $user_id = session('user_id');
-    if ($user_id){
         $id = $req->input('id');
         $blog = Blog::find($id);
         if($blog->image){
@@ -255,64 +216,42 @@ function delete_blog(Request $req){
         $blog-> delete();
 
         return response()->json(["message"=> "Blog Deleted."]);
-    }
-    else{
-        return view('login');
-    }
 }
 
-    function create_comment(Request $req){
-        $user_id = session('user_id');
-        if($user_id){
-            $blogID = $req->input('blog_id');
-            $user_comment = $req->input('comment');
-            $comment = new Comment();
-            $comment->content = $user_comment;
-            $comment->user_id = $user_id;
-            $comment->blog_id = $blogID;
-            $comment->save();
-            return response()->json(["message"=>"Comment Created"]);
-        }
-        else{
-            return view('login');
-        }
-    }
+function create_comment(Request $req){
+    $user = Auth::user();
+    $user_id = $user->id;
+    $blogID = $req->input('blog_id');
+    $user_comment = $req->input('comment');
+    $comment = new Comment();
+    $comment->content = $user_comment;
+    $comment->user_id = $user_id;
+    $comment->blog_id = $blogID;
+    $comment->save();
+}
 
-    function delete_comment(Request $req){
-        $user_id = session('user_id');
-        if ($user_id){
-            $id = $req->input('id');
-            $comment = Comment::find($id);
-            $comment-> delete();
-            return response()->json(["message"=> "Comment Deleted."]);
-        }
-        else{
-            return view('login');
-        }
-    }
+function delete_comment(Request $req){
+    $id = $req->input('id');
+    $comment = Comment::find($id);
+    $comment-> delete();
+    return response()->json(["message"=> "Comment Deleted."]);
+}
 
     function like_unlike(Request $req){
-        $user_id = session('user_id');
-        if($user_id){
-            $id = $req->input('blog_id');
-            $blog = Blog::find($id);
-            $user = User::find($user_id);
-            $liked = $user->likedBlogs->contains($blog);
-            if ($liked){
-                $user->likedBlogs()->detach($blog);
-                return response()->json(["message"=> "Blog Unliked"]);
-            }
-            else{
-                $user->likedBlogs()->attach($blog);
-                return response()->json(["message"=> "Liked"]);
-            }
-
+        $user = Auth::user();
+        $user_id = $user->id;
+        $id = $req->input('blog_id');
+        $blog = Blog::find($id);
+        $user = User::find($user_id);
+        $liked = $user->likedBlogs->contains($blog);
+        if ($liked){
+            $user->likedBlogs()->detach($blog);
+            return response()->json(["message"=> "Blog Unliked"]);
         }
         else{
-            return view('login');
+            $user->likedBlogs()->attach($blog);
+            return response()->json(["message"=> "Liked"]);
         }
     }
-
-
 }
 

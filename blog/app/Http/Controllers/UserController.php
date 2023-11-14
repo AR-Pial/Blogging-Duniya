@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Helper\Countries;
 use App\Models\Blog;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Config;
 
@@ -49,25 +50,40 @@ class UserController extends Controller
     }
 
     function login(Request $req){
+        $user_email = $req->input('email');
+        $user_password = $req->input('password');
 
-        $user = User::where('email',$req->input('email'))->first();
-        if ($user) {
-                if (password_verify($req->input('password'), $user->password)){
-                    $req->session()->put([
-                        "user_id"=>$user->id,
-                        "user_name"=>$user->name,
-                    ]);
-                    return response()->json(['message' => 'Login Successfull']);
-                }
-                else{
-                    return response()->json(['message' => 'Invalid Password!'], 400);
-                }
+        // Call the built-in authentication method for user validation.
+        if (Auth::attempt(['email' => $user_email, 'password' => $user_password])) {
+            // Authentication was successful; you can redirect the user or perform custom logic.
+            return response()->json(['message' => 'Login Successful']);
+        } else {
+
+            $user = User::where('email', $req->input('email'))->first();
+            if ($user) {
+                return response()->json(['message' => 'Invalid Password!'], 400);
+            } else {
+                return response()->json(['message' => 'Invalid Email!'], 400);
+            }
+            // Authentication failed; you can handle the error as needed.
         }
 
-        else{
-            return response()->json(['message' => 'Invalid Email!'], 400);
-        }
-
+//        $user = User::where('email',$req->input('email'))->first();
+//        if ($user) {
+//                if (password_verify($req->input('password'), $user->password)){
+//                    $req->session()->put([
+//                        "user_id"=>$user->id,
+//                        "user_name"=>$user->name,
+//                    ]);
+//                    return response()->json(['message' => 'Login Successfull']);
+//                }
+//                else{
+//                    return response()->json(['message' => 'Invalid Password!'], 400);
+//                }
+//        }
+//        else{
+//            return response()->json(['message' => 'Invalid Email!'], 400);
+//        }
     }
 
     function  logout(Request $req){
@@ -76,10 +92,7 @@ class UserController extends Controller
     }
 
     function profile(Request $req){
-        $user_id = session('user_id');
-        $user = User::find($user_id);
-
-        if ($user) {
+            $user = Auth::user();
             $name = $user->name;
             $email = $user->email;
             $country = $user->country;
@@ -93,38 +106,20 @@ class UserController extends Controller
                 'country' => $countryName,
             ];
             return view('profile', ['user' => $data]);
-        }
-        else {
-            return view('login');
-        }
-
     }
 
     function user_timeline(Request $req){
-        $user_id = session('user_id');
-        $user = User::find($user_id);
-
-        if ($user) {
-            return view('user_timeline');
-        }
-        else {
-            return view('login');
-        }
+        return view('user_timeline');
     }
 
     function user_posts(Request $req){
-        $user_id = session('user_id');
-        $user = User::find($user_id);
+        $user = Auth::user();
+        $user_id = $user->id;
 
-        if ($user) {
-            $blogs = Blog::where('user_id', $user_id)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
-            return view('user_posts', ['blogs' => $blogs]);
-        }
-        else {
-            return view('login');
-        }
+        $blogs = Blog::where('user_id', $user_id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+        return view('user_posts', ['blogs' => $blogs]);
     }
 
 }
