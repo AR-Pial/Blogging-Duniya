@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->text('content');
+            $table->dropColumn('type');
             $table->unsignedBigInteger('category_id')->nullable(); // Ensure the column is unsigned for foreign key reference
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->unsignedBigInteger('user_id')->nullable(); // Adding user_id column

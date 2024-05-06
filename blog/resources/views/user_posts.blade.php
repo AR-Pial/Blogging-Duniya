@@ -18,7 +18,7 @@
                                 <a  href="{{route('blog_page',$blog->id )}}" class="">
                                     <img src="{{ asset('storage/' . $blog->image) }}" class="card-img-top rounded" alt="No Image" height="180px">
                                     <div class="">
-                                        <h6 class="card-text text-dark p-2" style="height: 50px;">{{ Str::limit($blog->title, 73, '...') }}</h6>
+                                        <h6 class="card-text text-dark p-2" style="height: 50px;">{{ Str::limit($blog->title, 70, '...') }}</h6>
                                     </div>
                                 </a>
                                 <div class="d-flex m-1">

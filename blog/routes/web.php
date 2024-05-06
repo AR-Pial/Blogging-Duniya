@@ -32,8 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('create-blog',[PostController::class,'get_categories'])->name('create_blog');
     Route::post('create-blog',[PostController::class,'create_post'])->name('create_blog');;
 
-    Route::get('user_timeline',[UserController::class,'user_timeline'])->name('user_timeline');;
-    Route::view('community','community')->name('community');
+    Route::get('user_timeline',[UserController::class,'user_timeline'])->name('user_timeline');
     Route::get('user-posts',[UserController::class,'user_posts'])->name('user_posts');
     Route::get('blog-page/{id}',[PostController::class,'blog_page'])->name('blog_page');
     Route::get('get-blog',[PostController::class,'get_blog'])->name('get_blog');
@@ -42,6 +41,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('create-comment',[PostController::class,'create_comment'])->name('create_comment');
     Route::post('delete-comment',[PostController::class,'delete_comment'])->name('delete_comment');
     Route::post('like-unlike',[PostController::class,'like_unlike'])->name('like_unlike');
+    Route::view('community','community')->name('community');
+    Route::view('messages','messages')->name('messages');
 });
 
 

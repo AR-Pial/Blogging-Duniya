@@ -22,6 +22,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('community') }}">Community</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('messages') }}">Messages</a>
+                    </li>
 
                     <li class="nav-item dropdown ms-lg-auto">
                         <a class="nav-link" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">

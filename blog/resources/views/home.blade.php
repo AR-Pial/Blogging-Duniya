@@ -13,7 +13,7 @@
                         <div class="mx-2 my-2 col">
                             <div class="m-0 py-1 d-flex flex-column lh-1">
                                 <a class="custom-montserrat m-0 p-0" href=""> <span class="p-0 m-0">{{ $blog->user->name }}</span> </a>
-                                 <span class="text-muted m-0 py-1 " style="font-size: smaller">{{ date('d-m-y', strtotime($blog->created_at)) }}</span>
+{{--                                 <span class="text-muted m-0 py-1 " style="font-size: smaller">{{ date('d-m-y', strtotime($blog->created_at)) }}</span>--}}
                                 <span id="blog_posted_id" class="text-muted m-0 p-0">
                                     <?php
                                         $createdAt = Carbon::parse($blog->created_at);
@@ -45,7 +45,7 @@
                                 <a  href="{{route('blog_page',$blog->id )}}" class="">
                                     <img src="{{ asset('storage/' . $blog->image) }}" class="card-img-top rounded" alt="No Image" height="180px">
                                     <div class="">
-                                       <h6 class="card-text text-dark p-2" style="height: 50px;">{{ Str::limit($blog->title, 73, '...') }}</h6>
+                                       <h6 class="card-text text-dark p-2" style="height: 50px;">{{ Str::limit($blog->title, 70, '...') }}</h6>
                                     </div>
                                 </a>
                                 <div class="d-flex m-1">
@@ -117,7 +117,7 @@
                         blogs_div.html("")
 
                         $.each(blogs, function (index, blog) {
-                            let limitedTitle = blog.title.length > 72 ? blog.title.slice(0, 72) + '...' : blog.title;
+                            let limitedTitle = blog.title.length > 70 ? blog.title.slice(0, 70) + '...' : blog.title;
 
                             let blogElement = '<div class="mx-2 my-2 col">'+
                                                 '<div class="m-0 py-1 d-flex flex-column lh-1">'+
