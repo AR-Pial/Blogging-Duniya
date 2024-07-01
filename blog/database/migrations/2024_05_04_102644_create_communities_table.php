@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('image')->nullable();
-            $table->enum('type', ['private', 'private', 'closed'])->default('public');
+            $table->enum('type', ['public', 'private', 'closed'])->default('public');
             $table->unsignedBigInteger('owner_id');
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('description')->nullable();

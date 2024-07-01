@@ -8,12 +8,12 @@
                 use Carbon\Carbon;
             @endphp
             <div id="home_blogs" class="blogs row justify-content-center px-1 px-lg-2">
-                <div id="blogs_div" class="blogs row justify-content-center px-1 px-lg-2">
+                <div id="blogs_div" class="blogs row justify-content-start px-1 px-lg-2">
                     @foreach($blogs as $blog)
-                        <div class="mx-2 my-2 col">
+                        <div class="mx-2 my-2 mx-lg-0 col col-lg-4 ">
                             <div class="m-0 py-1 d-flex flex-column lh-1">
                                 <a class="custom-montserrat m-0 p-0" href=""> <span class="p-0 m-0">{{ $blog->user->name }}</span> </a>
-{{--                                 <span class="text-muted m-0 py-1 " style="font-size: smaller">{{ date('d-m-y', strtotime($blog->created_at)) }}</span>--}}
+                                {{-- <span class="text-muted m-0 py-1 " style="font-size: smaller">{{ date('d-m-y', strtotime($blog->created_at)) }}</span>--}}
                                 <span id="blog_posted_id" class="text-muted m-0 p-0">
                                     <?php
                                         $createdAt = Carbon::parse($blog->created_at);
@@ -119,7 +119,7 @@
                         $.each(blogs, function (index, blog) {
                             let limitedTitle = blog.title.length > 70 ? blog.title.slice(0, 70) + '...' : blog.title;
 
-                            let blogElement = '<div class="mx-2 my-2 col">'+
+                            let blogElement = '<div class="mx-2 my-2 mx-lg-0 col col-lg-4">'+
                                                 '<div class="m-0 py-1 d-flex flex-column lh-1">'+
                                                     '<a class="custom-montserrat" href="">'+blog.user_name+'</a>'+
                                                     '<span id="blog_posted_id" class="text-muted m-0 p-0">' +blog.posted_at+ '</span>'+
@@ -183,7 +183,7 @@
                         $.each(blogs, function (index, blog) {
                             let limitedTitle = blog.title.length > 72 ? blog.title.slice(0, 72) + '...' : blog.title;
 
-                            let blogElement = '<div class="mx-2 my-2 col">'+
+                            let blogElement = '<div class="mx-2 my-2 mx-lg-0 colcol-lg-4">'+
                                 '<div class="m-0 py-1 d-flex flex-column lh-1">'+
                                 '<a class="custom-montserrat" href="">'+blog.user_name+'</a>'+
                                 '<span id="blog_posted_id" class="text-muted m-0 p-0">' +blog.posted_at+ '</span>'+

@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('communities', function (Blueprint $table) {
-
-            $table->dropColumn('type');
-            $table->enum('visibility', ['public', 'private', 'closed'])->default('public')->after('type');
-            $table->string('short_title')->after('name');
+            //
+            $table->string('short_title')->nullable()->change();
         });
     }
 
@@ -25,8 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('communities', function (Blueprint $table) {
-            $table->enum('type', ['private', 'private', 'closed'])->default('public');
-            $table->dropColumn('visibility');
+            //
         });
     }
 };

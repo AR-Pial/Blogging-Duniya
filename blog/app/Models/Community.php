@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class Community extends Model
 {
     use HasFactory, HasUuids;
+    protected $fillable = [
+        'name', 'short_title', 'visibility', 'description', 'terms_condition', 'image', 'owner_id', 'created_by'
+    ];
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
@@ -19,8 +23,17 @@ class Community extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    // public function members()
+    // {
+    //     return $this->belongsToMany(User::class, 'community_user', 'community_id', 'user_id')->withTimestamps();
+    // }
     public function members()
     {
-        return $this->belongsToMany(User::class, 'community_user', 'community_id', 'user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'community_user');
+    }
+
+    public function getTotalMembers()
+    {
+        return $this->members()->count();
     }
 }

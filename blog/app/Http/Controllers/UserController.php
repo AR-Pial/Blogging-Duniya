@@ -55,7 +55,7 @@ class UserController extends Controller
 
         // Call the built-in authentication method for user validation.
         if (Auth::attempt(['email' => $user_email, 'password' => $user_password])) {
-            // Authentication was successful; you can redirect the user or perform custom logic.
+            
             return response()->json(['message' => 'Login Successful']);
         } else {
 
