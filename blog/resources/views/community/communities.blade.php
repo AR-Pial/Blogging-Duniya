@@ -83,7 +83,16 @@
                     <h5>Your Communities</h5>
                     <ul>
                         @foreach($user_communities as $community)
-                            <li><a href="#">{{ $community->name }}</a></li>
+                            <li>
+                                <a href="#" class="fs-5">
+                                    {{ $community->name }}
+                                </a>
+                                <p>                               
+                                    @foreach($community->categories as $category)
+                                        <span class="badge rounded-pill text-bg-info">{{ $category->name }}</span>
+                                    @endforeach                                  
+                                </p>
+                            </li>
                         @endforeach
                     </ul>
                 </div>

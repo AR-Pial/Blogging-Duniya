@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('profile',[UserController::class,'profile'])->name('profile');
     Route::get('logout',[UserController::class,'logout'])->name('logout');
 
-    Route::get('create-blog',[PostController::class,'get_categories'])->name('create_blog');
+    Route::get('create-blog',[PostController::class,'create_post_page'])->name('create_blog');
     Route::post('create-blog',[PostController::class,'create_post'])->name('create_blog');
     Route::get('user_timeline',[UserController::class,'user_timeline'])->name('user_timeline');
     Route::get('user-posts',[UserController::class,'user_posts'])->name('user_posts');

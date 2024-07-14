@@ -12,4 +12,8 @@ class Category extends Model
     {
         return $this->hasMany(Blog::class);
     }
+    public function communities()
+    {
+        return $this->belongsToMany(Community::class, 'category_community');
+    }
 }

@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Community;
+use App\Models\Category;
 
 
 
 class CommunityController extends Controller
 {
     //
-
     function communities(Request $req){
         $user = Auth::user();
         $user_id = $user->id;
@@ -22,8 +22,9 @@ class CommunityController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->get();
         $all_communities = Community::all();
+        $categories = Category::all();
       
-        return view('community.communities',['user_communities' => $user_communities]);
+        return view('community.communities',['user_communities' => $user_communities, 'categories' => $categories]);
 
     }
 
@@ -39,6 +40,7 @@ class CommunityController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'nullable|string',
             'terms_condition' => 'nullable|string',
+            'categories' => 'required|array'
         ]);
 
         $user = Auth::user();
@@ -50,9 +52,13 @@ class CommunityController extends Controller
             $imagePath = $req->file('image')->store('community_cover_images', 'public');
             $validatedData['image'] = $imagePath;
         }
+        
 
-        // Create the community
-        Community::create($validatedData);
+        $community = Community::create($validatedData);
+
+        if (isset($validatedData['categories'])) {
+            $community->categories()->attach($validatedData['categories']);
+        }
 
         return redirect()->route('community')->with('success', 'Community created successfully.');
 

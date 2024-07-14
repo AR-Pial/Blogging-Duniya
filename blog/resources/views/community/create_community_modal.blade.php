@@ -17,7 +17,16 @@
                         <label class="mb-1" for="short_title">Short Title</label>
                         <input class="form-control" type="text" name="short_title" placeholder="Short Title Here..." aria-label="short_title">
                     </div>
-                    
+
+
+                    <div class="mb-3 col-12 col-lg-6>
+                        <label class="mb-1" for="categories">Categories</label>
+                        <select id="categories" name="categories[]"  class="form-select" multiple aria-label="multiple select example" required>
+                          @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                          @endforeach
+                        </select>                     
+                    </div>
                     <div class="mb-3 col-12 col-lg-6">
                         <label class="mb-1" for="type">Visibility</label>
                         <select class="form-select" name="type">

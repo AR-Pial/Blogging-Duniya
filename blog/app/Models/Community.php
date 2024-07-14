@@ -36,4 +36,9 @@ class Community extends Model
     {
         return $this->members()->count();
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_community');
+    }
 }

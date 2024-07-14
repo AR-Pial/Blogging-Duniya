@@ -15,7 +15,7 @@ use Carbon\Carbon;
 class PostController extends Controller
 {
 
-function get_categories(Request $req){
+function create_post_page(Request $req){
     $categories = Category::all();
     return view('create_blog', ['categories' => $categories]);
 }
