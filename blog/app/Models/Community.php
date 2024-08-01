@@ -41,4 +41,12 @@ class Community extends Model
     {
         return $this->belongsToMany(Category::class, 'category_community');
     }
+    
+    public function getLocations()
+    {
+        return DB::table('community_location')
+            ->where('community_id', $this->id)
+            ->pluck('country')
+            ->toArray();
+    }
 }

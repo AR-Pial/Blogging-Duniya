@@ -17,6 +17,12 @@
              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
+    @elseif(session('info'))
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ session('info') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     @endif
 
     <div class="row min-vh-100 w-100">
@@ -44,23 +50,78 @@
                             </form>
                             <div class="my-2 my-lg-4 text-start">
                                 <h5 class="">Suggested For You</h5>
-                                <ul class="">
-                                    <li><a href="#">Travellers BD</a></li>
+                                <ul class="pe-2">
+                                    @foreach($unowned_communities as $community)
+                                        <li class="">
+                                            <div class="d-flex justify-content-between">
+                                                <a class="fs-5" href="{{route('community_page',$community->id )}}">
+                                                    {{ $community->name }} <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span> 
+                                                </a>
+                                                <form action="{{ route('community_join', $community->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="fd-6 btn btn-sm btn-primary text-white">Join</button>
+                                                </form>
+                                            </div>
+                                            
+                                            <p>                               
+                                                @foreach($community->categories as $category)
+                                                    <span class="badge rounded-pill text-bg-info">{{ $category->name }}</span>
+                                                @endforeach                                  
+                                            </p>
+                                        </li>
+                                    @endforeach
                                 </ul>
+
                             </div>
                         </div>
                         <div class="col-5 text-start p-2 d-flex flex-column">
                             <div>
-                                <h5 class="">Most Popular</h5>
+                                <h5 class="">Most Popular-100</h5>
                                 <ul class="">
-                                    <li><a href="#">Travellers BD</a></li>
+                                    @foreach($most_membered_communities as $community)
+                                        <li class="">
+                                            <div class="d-flex justify-content-between">
+                                                <a class="fs-5" href="{{route('community_page',$community->id )}}">
+                                                    {{ $community->name }} <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span>
+                                                </a>
+                                                <form action="{{ route('community_join', $community->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="fd-6 btn btn-sm btn-primary text-white">Join</button>
+                                                </form>
+                                            </div>
+                                            
+                                            <p>                               
+                                                @foreach($community->categories as $category)
+                                                    <span class="badge rounded-pill text-bg-info">{{ $category->name }}</span>
+                                                @endforeach                                  
+                                            </p>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
 
                             <div>
-                                <h5 class="">Newest</h5>
+                                <h5 class="">Newest-100</h5>
                                 <ul class="">
-                                    <li><a href="#">Travellers BD</a></li>
+                                    @foreach($newest_communities as $community)
+                                        <li class="">
+                                            <div class="d-flex justify-content-between">
+                                                <a class="fs-5" href="{{route('community_page',$community->id )}}">
+                                                    {{ $community->name }} <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span>
+                                                </a>
+                                                <form action="{{ route('community_join', $community->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="fd-6 btn btn-sm btn-primary text-white">Join</button>
+                                                </form>
+                                            </div>
+                                            
+                                            <p>                               
+                                                @foreach($community->categories as $category)
+                                                    <span class="badge rounded-pill text-bg-info">{{ $category->name }}</span>
+                                                @endforeach                                  
+                                            </p>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
                             
@@ -84,9 +145,9 @@
                     <ul>
                         @foreach($user_communities as $community)
                             <li>
-                                <a href="#" class="fs-5">
+                                <a href="{{route('community_page',$community->id )}}" class="fs-5">
                                     {{ $community->name }}
-                                </a>
+                                </a> <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span>
                                 <p>                               
                                     @foreach($community->categories as $category)
                                         <span class="badge rounded-pill text-bg-info">{{ $category->name }}</span>
@@ -100,7 +161,18 @@
                 <div>
                     <h5>Already Joined</h5>
                     <ul>
-                        <li><a href="#">Travellers of Bangladesh</a></li>
+                        @foreach($joined_communities as $community)
+                            <li>
+                                <a href="{{route('community_page',$community->id )}}" class="fs-5">
+                                    {{ $community->name }}
+                                </a> <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span>
+                                <p>                               
+                                    @foreach($community->categories as $category)
+                                        <span class="badge rounded-pill text-bg-info">{{ $category->name }}</span>
+                                    @endforeach                                  
+                                </p>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
 

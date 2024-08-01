@@ -27,6 +27,14 @@
                           @endforeach
                         </select>                     
                     </div>
+                    <div class="mb-3 col-12 col-lg-6>
+                        <label class="mb-1" for="locations">Locations</label>
+                        <select id="locations" name="locations[]"  class="form-select" multiple aria-label="multiple select example" required>
+                          @foreach($locations as $code => $name)
+                            <option value="{{ $code }}">{{ $name }}</option>
+                          @endforeach
+                        </select>                     
+                    </div>
                     <div class="mb-3 col-12 col-lg-6">
                         <label class="mb-1" for="type">Visibility</label>
                         <select class="form-select" name="type">

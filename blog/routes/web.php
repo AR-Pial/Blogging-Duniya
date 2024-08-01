@@ -44,6 +44,10 @@ Route::middleware(['auth'])->group(function () {
     // Community
     Route::get('community/',[CommunityController::class,'communities'])->name('community');
     Route::post('create-community',[CommunityController::class,'create_community'])->name('create_community');
+    Route::get('community-page/{id}',[CommunityController::class,'community_page'])->name('community_page');
+    Route::post('community_join/join/{id}',[CommunityController::class,'community_join'])->name('community_join');
+
+    // Messages
     Route::view('messages','messages')->name('messages');
 });
 

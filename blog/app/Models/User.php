@@ -16,6 +16,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Blog::class, 'blog_likes', 'user_id', 'blog_id');
     }
 
+    public function joined_communities()
+    {
+        return $this->belongsToMany(Community::class, 'community_user', 'user_id', 'community_id');
+    }
+
 
     /**
      * The attributes that are mass assignable.
