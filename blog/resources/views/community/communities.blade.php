@@ -4,7 +4,7 @@
     <style>
         /* Your custom CSS rules here */
         .min-vh-80 {
-           height: 80vh !important;
+           min-height: 80vh !important;
         }
         /* Add more custom styles as needed */
     </style>
@@ -26,7 +26,7 @@
     @endif
 
     <div class="row min-vh-100 w-100">
-        <div class="h-100 col-12 col-md-9 text-center p-2 p-lg-3">
+        <div class="min-vh-100 col-12 col-md-9 text-center p-2 p-lg-3">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-posts" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Community Posts</button>
@@ -40,7 +40,9 @@
             </ul>
             <!-- Join a community -->
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-posts" role="tabpanel" aria-labelledby="pills-home-tab">Here is your Community Post</div>
+                <div class="tab-pane fade show active" id="pills-posts" role="tabpanel" aria-labelledby="pills-home-tab">
+                    Here is your Community Post
+                </div>
                 <div class="tab-pane fade" id="pills-join" role="tabpanel" aria-labelledby="pills-profile-tab">
                     <div class="row justify-content-start my-2 mx-2 mx-lg-3 min-vh-80">
                         <div class="p-2 col-7 border-end border-1  border-secondary">
@@ -51,7 +53,7 @@
                             <div class="my-2 my-lg-4 text-start">
                                 <h5 class="">Suggested For You</h5>
                                 <ul class="pe-2">
-                                    @foreach($unowned_communities as $community)
+                                    @foreach($suggested_communities as $community)
                                         <li class="">
                                             <div class="d-flex justify-content-between">
                                                 <a class="fs-5" href="{{route('community_page',$community->id )}}">
@@ -84,10 +86,12 @@
                                                 <a class="fs-5" href="{{route('community_page',$community->id )}}">
                                                     {{ $community->name }} <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span>
                                                 </a>
-                                                <form action="{{ route('community_join', $community->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="fd-6 btn btn-sm btn-primary text-white">Join</button>
-                                                </form>
+                                                @if(!$community->isMember(auth()->user()) && $community->owner_id !== auth()->id())
+                                                    <form action="{{ route('community_join', $community->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="fd-6 btn btn-sm btn-primary text-white">Join</button>
+                                                    </form>
+                                                 @endif
                                             </div>
                                             
                                             <p>                               
@@ -98,9 +102,10 @@
                                         </li>
                                     @endforeach
                                 </ul>
+                                {{ $most_membered_communities->links() }}
                             </div>
 
-                            <div>
+                            <div class="">
                                 <h5 class="">Newest-100</h5>
                                 <ul class="">
                                     @foreach($newest_communities as $community)
@@ -109,10 +114,12 @@
                                                 <a class="fs-5" href="{{route('community_page',$community->id )}}">
                                                     {{ $community->name }} <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span>
                                                 </a>
-                                                <form action="{{ route('community_join', $community->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="fd-6 btn btn-sm btn-primary text-white">Join</button>
-                                                </form>
+                                                @if(!$community->isMember(auth()->user()) && $community->owner_id !== auth()->id())
+                                                    <form action="{{ route('community_join', $community->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="fd-6 btn btn-sm btn-primary text-white">Join</button>
+                                                    </form>
+                                                @endif
                                             </div>
                                             
                                             <p>                               
@@ -123,13 +130,31 @@
                                         </li>
                                     @endforeach
                                 </ul>
+                                {{ $newest_communities->links() }}
                             </div>
                             
                         </div>
                     </div>
-
                 </div>
-                <div class="tab-pane fade" id="pills-myCommunity" role="tabpanel" aria-labelledby="pills-contact-tab">My Community here</div>
+                <div class="tab-pane fade" id="pills-myCommunity" role="tabpanel" aria-labelledby="pills-contact-tab">
+                    <div>
+                        <h5>Your Communities</h5>
+                        <ul class="text-start">
+                            @foreach($user_communities as $community)
+                                <li>
+                                    <a href="{{route('community_page',$community->id )}}" class="fs-5">
+                                        {{ $community->name }}
+                                    </a> <span class="text-muted fs-6">({{ $community->getTotalMembers() }} people)</span>
+                                    <p>                               
+                                        @foreach($community->categories as $category)
+                                            <span class="badge rounded-pill text-bg-info">{{ $category->name }}</span>
+                                        @endforeach                                  
+                                    </p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -156,6 +181,7 @@
                             </li>
                         @endforeach
                     </ul>
+                    {{ $user_communities->links() }}
                 </div>
 
                 <div>
@@ -174,6 +200,7 @@
                             </li>
                         @endforeach
                     </ul>
+                    {{ $joined_communities->links() }}
                 </div>
 
             </div>

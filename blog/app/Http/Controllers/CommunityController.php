@@ -19,29 +19,98 @@ class CommunityController extends Controller
     function communities(Request $req){
         $user = Auth::user();
         $user_id = $user->id;
+        $user_country = $user->country;
 
         $user_communities = Community::where('owner_id', $user_id)
                     ->orderBy('created_at', 'desc')
                     ->get();
+
+
         $joined_communities = $user->joined_communities;
-        // $all_communities = Community::all();
+        $user_all_communities = $user_communities->merge($joined_communities);
+
+        $user_categories = $user_all_communities->flatMap(function ($community) {
+            return $community->categories;
+        })->unique('id');
+
+        $suggested_categories = collect();
+        if ($user_categories->isNotEmpty()){
+          while ($suggested_categories->count() < 5) {
+            $suggested_categories->push($user_categories->random());
+             }  
+        }
+        else{
+            $random_categories = Category::inRandomOrder()->take(5)->get();
+            $suggested_categories = $suggested_categories->merge($random_categories);
+        }
+       
         $unowned_communities = Community::where('owner_id', '!=', $user_id)
             ->whereDoesntHave('members', function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
             })
-            ->get();        
+            ->get();  
+
+        // Initialize a collection to store suggested communities
+        $suggested_communities = collect();
+
+        // Collect IDs of already suggested communities for the second loop
+        $suggested_community_ids = collect();
+
+        // First loop to filter unowned_communities based on 'WORLD' location
+        foreach ($suggested_categories as $category) {
+            $world_communities = $unowned_communities->filter(function ($community) use ($category) {
+                return $community->categories->contains('id', $category->id) &&
+                       $community->locations->contains('country', 'WORLD');
+            });
+            $world_community = $world_communities->shuffle()->first();
+
+            // Merge the newly filtered communities into the suggested_communities collection
+            if ($world_community) {
+                $suggested_communities->push($world_community);
+                $suggested_community_ids->push($world_community->id); // Push the ID if the community exists
+            }
+        }
+
+        // Second loop to filter unowned_communities based on user's country
+        foreach ($suggested_categories as $category) {
+            $user_country_communities = $unowned_communities->filter(function ($community) use ($category, $user_country) {
+                return $community->categories->contains('id', $category->id) &&
+                       $community->locations->contains('country', $user_country);
+            })->filter(function ($community) use ($suggested_community_ids) {
+                return !$suggested_community_ids->contains($community->id);
+            });
+            $country_community = $user_country_communities->shuffle()->first();
+
+            // Merge the newly filtered communities into the suggested_communities collection
+            if ($country_community) {
+                $suggested_communities->push($country_community);
+                $suggested_community_ids->push($country_community->id);
+            }
+        }
+
+        // Ensure uniqueness based on community ID
+        $suggested_communities = $suggested_communities->unique('id');
+        $suggested_communities = $suggested_communities->shuffle();
+        
         $categories = Category::all();
         $countryData = Countries::$countryData;
         $locations = array_merge(['WORLD' => 'World'], $countryData);
 
-        $newest_communities = Community::orderBy('created_at', 'desc')->take(100)->get();
+        $newest_communities = Community::orderBy('created_at', 'desc')->take(100)->paginate(5);
         $most_membered_communities = Community::withCount('members')
         ->orderBy('members_count', 'desc')
         ->take(100)
-        ->get();
+        // ->get();
+        ->paginate(5);
+
         
-        
-        return view('community.communities',['unowned_communities' => $unowned_communities,'joined_communities' => $joined_communities,'newest_communities'=> $newest_communities, 'most_membered_communities'=> $most_membered_communities,'user_communities' => $user_communities, 'categories' => $categories,'locations' => $locations]);
+        $final_joined_communities = $user->joined_communities()->paginate(5);
+        $final_user_communities = Community::where('owner_id', $user_id)
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(5);
+        return view('community.communities',['unowned_communities' => $unowned_communities,'suggested_communities' => $suggested_communities,
+        'joined_communities' => $final_joined_communities,'newest_communities'=> $newest_communities, 
+        'most_membered_communities'=> $most_membered_communities,'user_communities' => $final_user_communities, 'categories' => $categories,'locations' => $locations]);
 
     }
 

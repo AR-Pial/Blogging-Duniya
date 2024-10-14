@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\DB; 
 class Community extends Model
 {
     use HasFactory, HasUuids;
@@ -34,12 +34,21 @@ class Community extends Model
 
     public function getTotalMembers()
     {
-        return $this->members()->count();
+        return $this->members()->count() + 1;
     }
 
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_community');
+    }
+
+    public function isMember(User $user)
+    {
+        return $this->members()->where('user_id', $user->id)->exists();
+    }
+    public function locations()
+    {
+        return $this->hasMany(CommunityLocation::class, 'community_id');
     }
     
     public function getLocations()
